@@ -45,7 +45,7 @@ def extract_listings(page_soup):
     for a in page_soup.find_all('a', href=True):
         if "/partner/jobListing.htm?" in a['href']:
             # print("Found the URL:", a['href'])
-            listings_list.append("www.glassdoor.com" + a['href'])
+            listings_list.append("www.glassdoor.sg" + a['href'])
 
     listings_set = set(listings_list)
     jobCount = len(listings_set)
@@ -61,18 +61,21 @@ def extract_listings(page_soup):
 
 if __name__ == "__main__":
 
-    url = "https://www.glassdoor.sg/Job/singapore-software-engineer-jobs-SRCH_IL.0,9_IC3235921_KO10,27_IP1.htm"
+    #url = "https://www.glassdoor.sg/Job/singapore-software-engineer-jobs-SRCH_IL.0,9_IC3235921_KO10,27_IP1.htm"
+    #url = "https://www.glassdoor.sg/Job/singapore-software-developer-jobs-SRCH_IL.0,9_IC3235921_KO10,28.htm"
+    url = "https://www.glassdoor.sg/Job/singapore-data-scientist-jobs-SRCH_IL.0,9_IC3235921_KO10,24.htm?suggestCount=0&suggestChosen=false&clickSource=searchBtn&typedKeyword=data&typedLocation=singapore&context=Jobs&dropdown=0"
     start_time = time()
     maxJobs, maxPages = extract_maximums(url)
     time_taken = time() - start_time
     print("[INFO] Maximum number of jobs in range: {}, number of pages in range: {}".format(maxJobs, maxPages))
     print("[INFO] returned in {} seconds".format(time_taken))
 
-    url = "https://www.glassdoor.sg/Job/singapore-software-engineer-jobs-SRCH_IL.0,9_IC3235921_KO10,27_IP1.htm"
+    #url = "https://www.glassdoor.sg/Job/singapore-software-engineer-jobs-SRCH_IL.0,9_IC3235921_KO10,27_IP1.htm"
+    #url = "https://www.glassdoor.sg/Job/singapore-software-developer-jobs-SRCH_IL.0,9_IC3235921_KO10,28.htm"
     start_time = time()
     page_soup, requested_url = requestAndParse(url)
     listings_set, jobCount = extract_listings(page_soup)
     time_taken = time() - start_time
-    print(listings_set)
+    #print(listings_set)
     print(jobCount)
     print("[INFO] returned in {} seconds".format(time_taken))

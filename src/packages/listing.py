@@ -21,6 +21,7 @@ def extract_listingBanner(listing_soup):
         company_starRating = "NA"
         company_offeredRole = "NA"
         company_roleLocation = "NA"
+        company_salary = "NA"
     
     if listing_bannerGroup_valid:
         try:
@@ -49,8 +50,26 @@ def extract_listingBanner(listing_soup):
             company_roleLocation = listing_bannerGroup.find("div", class_="css-1v5elnn e11nt52q2").getText()
         except:
             company_roleLocation = "NA"
+        try:
+            company_salary = listing_bannerGroup.find_all("div", class_="css-1v5elnn e11nt52q2")[1].getText()
+            # TODO: extract salary range. The format now is either "Employer Est.:$7K - $8K" or "$7K - $8K (Glassdoor est.)"
+            # the desired format is "$7000 - $8000"
+            if "Employer Est.:" in company_salary:
+                company_salary = company_salary.replace("Employer Est.:", "")
+            elif "(Glassdoor est.)" in company_salary:
+                company_salary = company_salary.replace("(Glassdoor est.)", "")
+            elif "(Glassdoor Est.)" in company_salary:
+                company_salary = company_salary.replace("(Glassdoor Est.)", "")
+            company_salary = company_salary.replace("$", "")
+            company_salary = company_salary.replace("K", "000")
+            company_salary = company_salary.replace(" ", "")
+            company_salary = company_salary.replace("-", " - ")
+        except Exception as e:
+            #print(e)
+            company_salary = "NA"
 
-    return companyName, company_starRating, company_offeredRole, company_roleLocation
+    print(companyName, company_starRating, company_offeredRole, company_roleLocation, company_salary)
+    return companyName, company_starRating, company_offeredRole, company_roleLocation, company_salary
 
 
 # extracts desired data from listing description
@@ -79,30 +98,31 @@ def extract_listingDesc(listing_soup):
 
         if len(listing_jobDesc) <= 10:
             listing_jobDesc = listing_jobDesc_raw.getText()
-
+    #print(listing_jobDesc)
     return listing_jobDesc
 
 
 # extract data from listing
 def extract_listing(url):
+    #print(url)
     request_success = False
     try:
         listing_soup, requested_url = requestAndParse(url)
         request_success = True
     except Exception as e:
         print("[ERROR] Error occurred in extract_listing, requested url: {} is unavailable.".format(url))
-        return ("NA", "NA", "NA", "NA", "NA", "NA")
+        return ("NA", "NA", "NA", "NA", "NA", "NA", "NA")
 
     if request_success:
-        companyName, company_starRating, company_offeredRole, company_roleLocation = extract_listingBanner(listing_soup)
+        companyName, company_starRating, company_offeredRole, company_roleLocation, company_salary = extract_listingBanner(listing_soup)
         listing_jobDesc = extract_listingDesc(listing_soup)
 
-        return (companyName, company_starRating, company_offeredRole, company_roleLocation, listing_jobDesc, requested_url)
+        return (companyName, company_starRating, company_offeredRole, company_roleLocation, company_salary, listing_jobDesc, requested_url)
 
 
 if __name__ == "__main__":
     
-    url = "https://www.glassdoor.sg/job-listing/senior-software-engineer-java-scala-nosql-rakuten-asia-pte-JV_KO0,41_KE42,58.htm?jl=1006818844403&pos=104&ao=1110586&s=58&guid=00000179d5112735aff111df641c01be&src=GD_JOB_AD&t=SR&vt=w&ea=1&cs=1_c8e7e727&cb=1622777342179&jobListingId=1006818844403&cpc=AF8BC9077DDDE68D&jrtk=1-1f7ah29sehimi801-1f7ah29t23ogm000-80a84208d187d367&jvt=aHR0cHM6Ly9zZy5pbmRlZWQuY29tL3JjL2dkL3BuZz9hPUh5MlI4ekNxUWl3d19sM3FuaUJHaFh3RlZEYUJyUWlpeldIM2VBR1ZHTUVSeUk5VEo1ZTEzWWl5dU1sLWJWX0NIeGU4NjBDc3o0dE5sV3ZLT2pRTHFIZU5KTHpPLUhLeEFRSERmeE5CdHNUTUc1RV9FSFR2VW5FNldmWWxJQVp5dXIzNFRZZjIzLWNWNXE0NnRhSTF3V1pKeW54dHhNUkxVRlhEekI2djYwMVZGWl9vbGU5andSYjVhX3BvT0cza0JJb0NYQXo0TVZhNWdvUFY4dXY3WVJTYlMySUpZTVpyR252dEc3ZFM1aXlFQ09icHI0YVRKU2ZLUzkzMUxmLXpyQjFlZHZxbHBxbElZMXhpRksxZmdIMEhFLTJBN2pySHRZa1g0aDJCWGRxTzBCdDM0bDNzWlJDLWIxaUlCT0xnZFh6bjg4cnNjZ1N0V1BHdVhNVm5xT3A3Q0s1UEEtb0QxWDl0WFhkY19WM3Fic0dSS0tfZi1oVUZyUUlrc0o2ZV9yVHNjaFpRVkIyV2V1bmRBejNYQWVPcFZNb3lqZFlONWpLUTdVbDUxTlU5LXFVWnZIT19VWlNEWDVtdVYwR3dNbWpXVDFyaHhMM3ZkcUZqcnM4WDZuc3BYYUhYcHg1dXNUVTVJODdzQk12Q2owaXkxTmRjUmhNXzU2TF9KbXNlY0VzajNWWmFOMDQ3QmNSWU5HSGNFNmctcXUzRUV4bHJrdjQxQ3QteW02ZFo5bE45XzBfb3prR2NBVkdqQU9kaS1UNWRwVnllYzA1OU53Q3Aya2QwdHdoRU5kUnU5UzNlTUR5WmJOSFZGb0t3MnR6V1lKbTllaGxuS3hTMEdoMDhLekVBWGg4OW9BblZGR2U2ajRtMUw3T29CSVNvZWVZaC0wRHRoSTV4eUV0ODJCRERkeTV3QlREUVNTUUZ1Mkp3WUEyRE9qZk5udk5xbzQwaVZKRmF0VWFlVDc2TFl6bnIwQTB2RWRGZlNORE41QmlUaHI3VmgyUWs3bkRGaVFibmUzcWlqZE1ZYzR5TmVYZUhnUFFmOHEwc1Q2aHJrX0hPX1RwbWI5M21hd2hxOEd6a2lEaFMtUQ&ctt=1622777391568"
+    url = "https://www.glassdoor.sg/Job/singapore-software-developer-jobs-SRCH_IL.0,9_IC3235921_KO10,28.htm"
     start_time = time()
     returned_tuple = extract_listing(url)
     time_taken = time() - start_time
