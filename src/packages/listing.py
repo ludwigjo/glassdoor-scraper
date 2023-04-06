@@ -30,7 +30,8 @@ def extract_listingBanner(listing_soup):
             company_starRating = "NA"
         if company_starRating != "NA":
             try:
-                companyName = listing_bannerGroup.find("div", class_="css-16nw49e e11nt52q1").getText().replace(company_starRating,'')
+                #companyName = listing_bannerGroup.find("div", class_="css-16nw49e e11nt52q1").getText().replace(company_starRating,'')
+                companyName = listing_bannerGroup.find("div", class_="d-flex").getText().replace(company_starRating,'')
             except:
                 companyName = "NA"
             # company_starRating.replace("★", "")
@@ -67,7 +68,6 @@ def extract_listingBanner(listing_soup):
         except Exception as e:
             #print(e)
             company_salary = "NA"
-
     print(companyName, company_starRating, company_offeredRole, company_roleLocation, company_salary)
     return companyName, company_starRating, company_offeredRole, company_roleLocation, company_salary
 
@@ -116,6 +116,7 @@ def extract_listing(url):
     if request_success:
         companyName, company_starRating, company_offeredRole, company_roleLocation, company_salary = extract_listingBanner(listing_soup)
         listing_jobDesc = extract_listingDesc(listing_soup)
+        print(requested_url)
 
         return (companyName, company_starRating, company_offeredRole, company_roleLocation, company_salary, listing_jobDesc, requested_url)
 
