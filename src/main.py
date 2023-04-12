@@ -145,10 +145,11 @@ if __name__ == "__main__":
         for j in range(1, 5):
             try:   
                 print("Industry: {}, Company Size: {}".format(i, j))
-                url = f"https://www.glassdoor.sg/Job/united-states-data-scientist-jobs-SRCH_IL.0,13_IN1_KO14,28.htm?radius=124&industryNId={0}&employerSizes={1}".format(i, j)
+                url = "https://www.glassdoor.sg/Job/united-states-data-scientist-jobs-SRCH_IL.0,13_IN1_KO14,28.htm?radius=124&industryNId={}&employerSizes={}".format(i, j)
+                print(url)
                 glassdoor_scraper(
                     baseurl=url,
-                    target_num=10
+                    target_num=60
                 )
             except Exception as e:
                 print(e)
