@@ -1,4 +1,9 @@
 {
-    "base_url": "https://www.glassdoor.sg/Job/singapore-data-scientist-jobs-SRCH_IL.0,9_IC3235921_KO10,24.htm?suggestCount=0&suggestChosen=false&clickSource=searchBtn&typedKeyword=data&typedLocation=singapore&context=Jobs&dropdown=0",
-    "target_num": 600
+    "base_url": "https://www.glassdoor.sg/Job/united-states-data-scientist-jobs-SRCH_IL.0,13_IN1_KO14,28.htm?industryNId=10001&radius=124&sortBy=date_desc",
+    "target_num": 10
 }
+
+// US:
+// https://www.glassdoor.sg/Job/united-states-data-scientist-jobs-SRCH_IL.0,13_IN1_KO14,28.htm?industryNId=10002&employerSizes=1
+// SG:
+// https://www.glassdoor.sg/Job/singapore-data-scientist-jobs-SRCH_IL.0,9_IC3235921_KO10,24.htm?radius=124&industryNId=10001&employerSizes=1

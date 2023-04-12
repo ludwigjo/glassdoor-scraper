@@ -18,18 +18,18 @@ from packages.listing import extract_listing
 
 class glassdoor_scraper():
 
-    def __init__(self, configfile, baseurl, targetnum) -> None:
+    def __init__(self, baseurl, target_num) -> None:
 
         # load first
-        base_url, target_num = self.load_configs(path=configfile)
+        #base_url, target_num = self.load_configs(path=configfile)
         # overwrite those that are not none
-        if type(baseurl) != type(None):
-            base_url = baseurl
-            print("Using supplied baseurl")
-        if type(targetnum) != type(None):
-            target_num = targetnum
-            print("Using supplied targetnum")
-        print(configfile, baseurl, targetnum)
+        # if type(baseurl) != type(None):
+        #     base_url = baseurl
+        #     print("Using supplied baseurl")
+        # if type(targetnum) != type(None):
+        #     target_num = targetnum
+        #     print("Using supplied targetnum")
+        # print(configfile, baseurl, targetnum)
 
          # initialises output directory and file
         if not os.path.exists('output'):
@@ -37,13 +37,14 @@ class glassdoor_scraper():
         now = datetime.now() # current date and time
         output_fileName = "./output/output_" + now.strftime("%d-%m-%Y") + ".csv"
         csv_header = [("companyName", "company_starRating", "company_offeredRole", "company_roleLocation",  "company_salary", "listing_jobDesc", "requested_url")]
-        self.fileWriter(listOfTuples=csv_header, output_fileName=output_fileName)
+        #self.fileWriter(listOfTuples=csv_header, output_fileName=output_fileName)
 
-        maxJobs, maxPages = extract_maximums(base_url)
+        maxJobs, maxPages = extract_maximums(baseurl)
         # print("[INFO] Maximum number of jobs in range: {}, number of pages in range: {}".format(maxJobs, maxPages))
         if (target_num >= maxJobs):
-            print("[ERROR] Target number larger than maximum number of jobs. Exiting program...\n")
-            os._exit(0)
+            # print("[ERROR] Target number larger than maximum number of jobs. Exiting program...\n")
+            # os._exit(0)
+            target_num = maxJobs
 
         # initialises enlighten_manager
         enlighten_manager = enlighten.get_manager()
@@ -54,7 +55,7 @@ class glassdoor_scraper():
         total_listingCount = 0
 
         # initialises prev_url as base_url
-        prev_url = base_url
+        prev_url = baseurl
 
         while total_listingCount <= target_num:
             # clean up buffer
@@ -126,14 +127,30 @@ class glassdoor_scraper():
         return new_url
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--configfile', help="Specify location of json config file", type=str, required=False, default="config.json")
-    parser.add_argument('-b', '--baseurl', help="Base_url to use. Overwrites config file", type=str, required=False, default=None)
-    parser.add_argument('-tn', '--targetnum', help="Target number to scrape. Overwrites config file", type=int, required=False, default=None)
-    args = vars(parser.parse_args())
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument('-c', '--configfile', help="Specify location of json config file", type=str, required=False, default="config.json")
+    # parser.add_argument('-b', '--baseurl', help="Base_url to use. Overwrites config file", type=str, required=False, default=None)
+    # parser.add_argument('-tn', '--targetnum', help="Target number to scrape. Overwrites config file", type=int, required=False, default=None)
+    # args = vars(parser.parse_args())
 
-    glassdoor_scraper( 
-        configfile=args["configfile"],
-        baseurl=args["baseurl"],
-        targetnum=args["targetnum"]
-        )
+    # glassdoor_scraper( 
+    #     configfile=args["configfile"],
+    #     baseurl=args["baseurl"],
+    #     targetnum=args["targetnum"]
+    #     )
+    
+    # iterate over all job industries
+    for i in range(10001, 10026):
+        # iterate over company size
+        for j in range(1, 5):
+            try:   
+                print("Industry: {}, Company Size: {}".format(i, j))
+                url = f"https://www.glassdoor.sg/Job/united-states-data-scientist-jobs-SRCH_IL.0,13_IN1_KO14,28.htm?radius=124&industryNId={0}&employerSizes={1}".format(i, j)
+                glassdoor_scraper(
+                    baseurl=url,
+                    target_num=10
+                )
+            except Exception as e:
+                print(e)
+                print("Error in Industry: {}, Company Size: {}".format(i, j))
+                continue

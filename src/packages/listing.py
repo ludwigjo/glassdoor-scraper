@@ -116,7 +116,7 @@ def extract_listing(url):
     if request_success:
         companyName, company_starRating, company_offeredRole, company_roleLocation, company_salary = extract_listingBanner(listing_soup)
         listing_jobDesc = extract_listingDesc(listing_soup)
-        print(requested_url)
+        #print(requested_url)
 
         return (companyName, company_starRating, company_offeredRole, company_roleLocation, company_salary, listing_jobDesc, requested_url)
 

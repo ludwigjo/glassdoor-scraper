@@ -45,7 +45,9 @@ def extract_listings(page_soup):
     for a in page_soup.find_all('a', href=True):
         if "/partner/jobListing.htm?" in a['href']:
             # print("Found the URL:", a['href'])
-            listings_list.append("www.glassdoor.sg" + a['href'])
+            #listings_list.append("www.glassdoor.sg" + a['href'])
+            listings_list.append("www.glassdoor.com" + a['href'])
+
 
     listings_set = set(listings_list)
     jobCount = len(listings_set)
